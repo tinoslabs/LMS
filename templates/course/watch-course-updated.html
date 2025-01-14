@@ -1,0 +1,189 @@
+{% extends 'base-1.html' %}
+{% block title %}Watch Course{% endblock %}
+{% load static %}
+{% load course_tags %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/watch-course-updated.css' %}">
+
+<!--====== PAGE BANNER PART START ======-->
+    
+<section id="page-banner" class="pt-105 pb-110 bg_cover" data-overlay="8"  style="background-image: url('{% static "images/page-banner-2.jpg" %}');">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-banner-cont">
+                    <h2>Video</h2>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href=" {% url 'index' %} ">Home</a></li>
+                            <li class="breadcrumb-item"><a href="#">Courses</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"> {{ course.title }} </li>
+                        </ol>
+                    </nav>
+                </div>  <!-- page banner cont -->
+            </div>
+        </div> <!-- row -->
+    </div> <!-- container -->
+</section>
+
+<!--====== PAGE BANNER PART ENDS ======-->
+
+
+<div class="course_video_container">
+    <div class="course_video_main-video-container">
+        <h3 class="course_video_main-video__title">{{ video.title }}</h3>
+        <div class="video-container">
+            <video class="course_video_main-video" src="{{ video.video.url }}" controls></video>
+        </div>    
+    </div>
+
+    <div class="playlist-container">
+        <div class="search-container">
+            <span class="search-icon">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M8.8 0C3.9 0 0 3.9 0 8.8c0 4.9 3.9 8.8 8.8 8.8c4.9 0 8.8-3.9 8.8-8.8C17.6 3.9 13.7 0 8.8 0zm0 16c-4 0-7.2-3.2-7.2-7.2C1.6 4.8 4.8 1.6 8.8 1.6c4 0 7.2 3.2 7.2 7.2c0 4-3.2 7.2-7.2 7.2z"/>
+                    <path d="M19.8 18.6l-4.6-4.6c-0.3-0.3-0.8-0.3-1.1 0c-0.3 0.3-0.3 0.8 0 1.1l4.6 4.6c0.2 0.2 0.4 0.2 0.6 0.2s0.4-0.1 0.6-0.2c0.3-0.3 0.3-0.8-0.1-1.1z"/>
+                </svg>
+            </span>
+            <input type="search" placeholder="Search item">
+        </div>
+
+        <div id="accordionCurriculum">
+            
+            {% for lesson in course.lesson_set.all %}
+<div class="lesson-item">
+    <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="expand-icon">+</span>
+        <span class="lesson-title">{{ lesson.name }}</span>
+    </div>
+    <div class="video-list">
+        
+        {% if lesson.videomodel_set.all %}
+            {% for video in lesson.videomodel_set.all %}
+            
+            <div class="border-top px-5 border-color-20 py-4 min-height-70 d-md-flex align-items-center">
+                <div class="d-flex align-items-center me-auto mb-4 mb-md-0">
+                    <div class="text-secondary d-flex">
+                        <!-- <i class="fab fa-youtube" aria-hidden="true" style="color: red;"></i> -->
+                    </div>
+                    
+                    {% if check_enroll or video.preview %}
+                        <a href="/course/{{ course.id }}/watch-course/{{ video.id }}">
+                            <div class="ms-4 text-white video-title">
+                                {{ video.title }} &nbsp;
+                            </div>
+                        </a>
+
+                        <div class="d-flex align-items-center overflow-auto overflow-md-visible flex-shrink-all">
+                            <div class="badge btn-orange-soft text-white-70 me-5 font-size-sm fw-normal py-2 duration-border">
+                                {{ video.time_duration }} min &nbsp; &nbsp;
+                            </div>
+                            <a href="/course/{{ course.id }}/watch-course/{{ video.id }}" class="text-secondary d-flex play-icon">
+                                <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12.8704 6.15374L3.42038 0.328572C2.73669 -0.0923355 1.9101 -0.109836 1.20919 0.281759C0.508282 0.673291 0.0898438 1.38645 0.0898438 2.18929V13.7866C0.0898438 15.0005 1.06797 15.9934 2.27016 16C2.27344 16 2.27672 16 2.27994 16C2.65563 16 3.04713 15.8822 3.41279 15.6591C3.70694 15.4796 3.79991 15.0957 3.62044 14.8016C3.44098 14.5074 3.05697 14.4144 2.76291 14.5939C2.59188 14.6982 2.42485 14.7522 2.27688 14.7522C1.82328 14.7497 1.33763 14.3611 1.33763 13.7866V2.18933C1.33763 1.84492 1.51713 1.53907 1.81775 1.3711C2.11841 1.20314 2.47294 1.21064 2.76585 1.39098L12.2159 7.21615C12.4999 7.39102 12.6625 7.68262 12.6618 8.01618C12.6611 8.34971 12.4974 8.64065 12.2118 8.81493L5.37935 12.9983C5.08548 13.1783 4.9931 13...." fill="white"></path>
+                                </svg>                                
+                            </a>
+                        </div>
+                    {% else %}
+                        <!-- Tooltip only shows when the user has not enrolled or the video is not a preview -->
+                        <!-- Tooltip with an anchor tag -->
+                        <a href="payment" class="enroll-tooltip" data-toggle="tooltip" title="Enroll This Course!">
+                            <span class="ms-4 text-white fw-bold video-title">
+                                {{ video.title }} &nbsp;
+                            </span>
+                        </a>
+
+
+                        <div class="d-flex align-items-center overflow-auto overflow-md-visible flex-shrink-all">
+                            <div class="badge btn-orange-soft text-white-70 me-5 font-size-sm fw-normal py-2 duration-border">
+                                {{ video.time_duration }} min &nbsp; &nbsp;
+                            </div>
+                            <a href="payment" class="text-secondary d-flex play-icon">
+                                <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12.8704 6.15374L3.42038 0.328572C2.73669 -0.0923355 1.9101 -0.109836 1.20919 0.281759C0.508282 0.673291 0.0898438 1.38645 0.0898438 2.18929V13.7866C0.0898438 15.0005 1.06797 15.9934 2.27016 16C2.27344 16 2.27672 16 2.27994 16C2.65563 16 3.04713 15.8822 3.41279 15.6591C3.70694 15.4796 3.79991 15.0957 3.62044 14.8016C3.44098 14.5074 3.05697 14.4144 2.76291 14.5939C2.59188 14.6982 2.42485 14.7522 2.27688 14.7522C1.82328 14.7497 1.33763 14.3611 1.33763 13.7866V2.18933C1.33763 1.84492 1.51713 1.53907 1.81775 1.3711C2.11841 1.20314 2.47294 1.21064 2.76585 1.39098L12.2159 7.21615C12.4999 7.39102 12.6625 7.68262 12.6618 8.01618C12.6611 8.34971 12.4974 8.64065 12.2118 8.81493L5.37935 12.9983C5.08548 13.1783 4.9931 13...." fill="white"></path>
+                                </svg>                                
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                
+            </div>
+            
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the video element
+        const video = document.querySelector('.course_video_main-video');
+        
+        // Add double click event for fullscreen
+        video.addEventListener('dblclick', function() {
+            if (!document.fullscreenElement) {
+                if (video.requestFullscreen) {
+                    video.requestFullscreen();
+                } else if (video.webkitRequestFullscreen) {
+                    video.webkitRequestFullscreen();
+                } else if (video.msRequestFullscreen) {
+                    video.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-container input');
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const lessonItems = document.querySelectorAll('.lesson-item');
+            
+            lessonItems.forEach(item => {
+                const title = item.querySelector('.lesson-title').textContent.toLowerCase();
+                const videos = item.querySelectorAll('.video-item');
+                let found = title.includes(searchTerm);
+                
+                videos.forEach(video => {
+                    if (video.textContent.toLowerCase().includes(searchTerm)) {
+                        found = true;
+                    }
+                });
+                
+                item.style.display = found ? 'block' : 'none';
+            });
+        });
+    });
+
+    function toggleLesson(element) {
+        const videoList = element.nextElementSibling;
+        const expandIcon = element.querySelector('.expand-icon');
+        
+        // Close all other video lists
+        document.querySelectorAll('.video-list').forEach(list => {
+            if (list !== videoList && list.classList.contains('active')) {
+                list.classList.remove('active');
+                list.previousElementSibling.querySelector('.expand-icon').textContent = '+';
+            }
+        });
+        
+        // Toggle current video list
+        videoList.classList.toggle('active');
+        expandIcon.textContent = videoList.classList.contains('active') ? '-' : '+';
+    }
+</script>
+{% endblock %}

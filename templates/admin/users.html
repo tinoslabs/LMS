@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User List</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container my-5">
+    <h2 class="text-center">User List</h2>
+
+    <!-- Admin List -->
+    <h3 class="mt-5">Admins</h3>
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Profile Image</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in admins %}
+            <tr>
+                <td><img src="{{ user.profile_image.url }}" alt="Profile Image" width="50" height="50" class="rounded-circle"></td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone_number|default:"N/A" }}</td>
+                <td>{{ user.address|default:"N/A" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center">No admins found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Instructor List -->
+    <h3 class="mt-5">Instructors</h3>
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Profile Image</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in instructors %}
+            <tr>
+                <td><img src="{{ user.profile_image.url }}" alt="Profile Image" width="50" height="50" class="rounded-circle"></td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone_number|default:"N/A" }}</td>
+                <td>{{ user.address|default:"N/A" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center">No instructors found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Student List -->
+    <h3 class="mt-5">Students</h3>
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Profile Image</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in students %}
+            <tr>
+                <td><img src="{{ user.profile_image.url }}" alt="Profile Image" width="50" height="50" class="rounded-circle"></td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone_number|default:"N/A" }}</td>
+                <td>{{ user.address|default:"N/A" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center">No students found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

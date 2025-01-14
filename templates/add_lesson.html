@@ -1,0 +1,19 @@
+<!-- add_lesson.html -->
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="id_course" class="form-label">Course</label>
+        {{ form.course }}
+        {% if form.course.errors %}
+            <div class="text-danger">{{ form.course.errors }}</div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        <label for="id_name" class="form-label">Lesson Name</label>
+        {{ form.name }}
+        {% if form.name.errors %}
+            <div class="text-danger">{{ form.name.errors }}</div>
+        {% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">Add Lesson</button>
+</form>

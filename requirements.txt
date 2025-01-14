@@ -1,0 +1,13 @@
+
+Django==5.0.6
+django-auto-logout==0.5.1
+django-ckeditor==6.7.1
+django-crispy-forms==2.3
+django-debug-toolbar==4.4.6
+
+pillow==11.1.0
+
+gunicorn==22.0.0
+
+whitenoise==5.2.0
+

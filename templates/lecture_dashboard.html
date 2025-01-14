@@ -1,0 +1,8 @@
+<h2>Lecture Dashboard</h2>
+{% for lecture in lectures %}
+    <h3>{{ lecture.title }}</h3>
+    <p>{{ lecture.description }}</p>
+    <p>Date: {{ lecture.date }}</p>
+{% empty %}
+    <p>No approved lectures available.</p>
+{% endfor %}

@@ -1,0 +1,693 @@
+<style>
+@import url("https://fonts.googleapis.com/css?family=Raleway");
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: "Raleway", sans-serif;
+}
+
+.messages-list::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+
+.messages-list::-webkit-scrollbar {
+  width: 8px;
+  background-color: #f5f5f5;
+}
+
+.messages-list::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #3d3d3d;
+}
+
+.pageHolder {
+  height: 100vh;
+  width: 100vw;
+  background: #f1f1f1;
+}
+
+.chatBot-parent {
+  background: #ffffff;
+  width: 320px;
+  height: 94vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 12px;
+  box-shadow: 5px 5px 25px 0 rgba(46, 61, 73, 0.5);
+}
+
+.chatbot-header {
+  width: 100%;
+  background: #3d3d3d;
+  height: 50px;
+  text-align: center;
+  position: relative;
+  color: white;
+}
+
+.chatbot-icon {
+  position: absolute;
+  left: 10px;
+  top: 3px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #8bc34a;
+  width: 40px;
+  height: 40px;
+}
+
+.chatbot-name {
+  position: relative;
+  top: 15px;
+  left: -10px;
+}
+
+.online::before {
+  content: "";
+  position: absolute;
+}
+
+.online {
+  font-size: 10px;
+  right: 20px;
+  position: absolute;
+  top: 10px;
+}
+
+.online-animation {
+  animation: blinkingText 1s infinite;
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  right: -7px;
+  top: 0px;
+  border-radius: 50%;
+  background: #8bc34a;
+}
+
+@keyframes blinkingText {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.chatbot-body {
+  width: 100%;
+  height: calc(100% - 40px);
+  border-radius: 0px 0px 12px 12px;
+  background: #525252;
+  /* overflow-y: auto; */
+}
+.messages-list {
+  height: 100%;
+  overflow-y: auto;
+}
+.messages-holder {
+  height: 100%;
+  list-style: none;
+  margin: 0px;
+  padding: 0px 0px 0px 0px;
+}
+
+.bot-message,
+.user-message {
+  clear: both;
+}
+
+.message-holder-left,
+.message-holder-right {
+  padding: 8px;
+  max-width: 80%;
+  border-radius: 8px;
+  margin: 10px;
+  position: relative;
+  box-shadow: 0 10px 40px -14px rgba(0, 0, 0, 0.45);
+}
+
+.message-holder-left:before,
+.message-holder-right:before {
+  bottom: 0%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-width: 10px;
+  border-radius: 7px;
+}
+
+.message-holder-left:before {
+  left: 0%;
+  margin-left: -10px;
+  border-bottom-color: #ffffff;
+}
+
+.message-holder-right:before {
+  right: 0%;
+  margin-right: -10px;
+  border-bottom-color: #f1f1f1;
+}
+
+.message-holder-left {
+  float: left;
+  background: #ffffff;
+  color: #3d3d3d;
+}
+
+.messageAmimation {
+  animation: 1s ease-out 0s 1 messageAnimation;
+}
+
+.message-holder-right {
+  float: right;
+  background: #f1f1f1;
+  color: #000000;
+}
+
+.message {
+  font-size: 15px;
+}
+
+.message-time {
+  float: right;
+  font-size: 11px;
+  color: #949494;
+}
+
+.input-block {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+}
+
+.user-input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 25px;
+  position: relative;
+  border: 1px solid #dbe2e8;
+  color: #2e3d49;
+  max-width: 50rem;
+  outline: none;
+  height: 30px;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  display: block;
+  -webkit-box-shadow: 5px 5px 25px 0 rgba(46, 61, 73, 0.2);
+  box-shadow: 5px 5px 25px 0 rgba(46, 61, 73, 0.2);
+}
+
+.send-message-icon {
+  position: relative;
+}
+.send-icon {
+  position: absolute;
+  z-index: 2;
+  right: 14px;
+  top: 5px;
+  background: #3d3d3d;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.send-icon:hover {
+  box-shadow: 5px 5px 25px 0 rgba(46, 61, 73, 0.5);
+}
+
+@keyframes messageAnimation {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.loading-dots {
+  text-align: center;
+  z-index: 5;
+}
+
+.dot {
+  opacity: 0;
+  animation: showHideDot 2.5s ease-in-out infinite;
+}
+
+.one {
+  animation-delay: 0.2s;
+}
+
+.two {
+  animation-delay: 0.4s;
+}
+
+.three {
+  animation-delay: 0.6s;
+}
+
+@keyframes showHideDot {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.button {
+  display: block;
+  position: relative;
+  margin: 10px 4px;
+  text-align: center;
+  line-height: 50px;
+  color: #fff;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btnBlueGreen.btnPush {
+  box-shadow: 0px 5px 0px 0px #007144;
+}
+.btnPush:hover {
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.btnBlueGreen.btnPush:hover {
+  box-shadow: 0px 0px 0px 0px #007144;
+}
+.btnBlueGreen {
+  background: #00ae68;
+  float: left;
+}
+
+.btnOrange {
+  background: #ffaa40;
+}
+.btnOrange.btnPush {
+  box-shadow: 0px 5px 0px 0px #a66615;
+  float: right;
+}
+.btnOrange.btnPush:hover {
+  box-shadow: 0px 0px 0px 0px #a66615;
+}
+.mbsc-fr-c {
+  max-height: 300px;
+  overflow-y: auto;
+}
+.mbsc-fr-c::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+
+.mbsc-fr-c::-webkit-scrollbar {
+  width: 8px;
+  background-color: #f5f5f5;
+}
+
+.mbsc-fr-c::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #3d3d3d;
+}
+</style>
+
+<div class="pageHolder">
+    <div class="chatBot-parent">
+      <div class="chatbot-header">
+        <img class="chatbot-icon" src="https://s5.postimg.cc/q9vold06b/image.png">
+        <span class="chatbot-name">Adam - The Chat Bot!</span>
+        <span class="online">
+                      Online
+                      <span class="online-animation"></span>
+        </span>
+      </div>
+      <div class="chatbot-body">
+        <div class="messages-list">
+          <ul class="messages-holder">
+            <li class="bot-message first">
+              <div class="message-holder-left">
+                <div class="message">
+                  Oh, Hi! 👋👋 I'm a bot, And I'm here to make your calender work easier for you 👀.
+                </div>
+                <div class="message-time">
+                  Today, 12:07 PM
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="input-block">
+          <div class="input">
+            <div class="send-message-icon">
+              <img class="send-icon" src="https://png.icons8.com/color/40/000000/paper-plane.png">
+            </div>
+            <input class="user-input" id="user-input">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    mobiscroll.settings = {
+        theme: "ios-dark",
+        lang: "en"
+      };
+      var colorArray = [
+        "#FF6633",
+        "#FFB399",
+        "#FF33FF",
+        "#FFFF99",
+        "#00B3E6",
+        "#E6B333",
+        "#3366E6",
+        "#999966",
+        "#99FF99",
+        "#B34D4D",
+        "#80B300",
+        "#809900",
+        "#E6B3B3",
+        "#6680B3",
+        "#66991A",
+        "#FF99E6",
+        "#CCFF1A",
+        "#FF1A66",
+        "#E6331A",
+        "#33FFCC",
+        "#66994D",
+        "#B366CC",
+        "#4D8000",
+        "#B33300",
+        "#CC80CC",
+        "#66664D",
+        "#991AFF",
+        "#E666FF",
+        "#4DB3FF",
+        "#1AB399",
+        "#E666B3",
+        "#33991A",
+        "#CC9999",
+        "#B3B31A",
+        "#00E680",
+        "#4D8066",
+        "#809980",
+        "#E6FF80",
+        "#1AFF33",
+        "#999933",
+        "#FF3380",
+        "#CCCC00",
+        "#66E64D",
+        "#4D80CC",
+        "#9900B3",
+        "#E64D66",
+        "#4DB380",
+        "#FF4D4D",
+        "#99E6E6",
+        "#6666FF"
+      ];
+      var now = new Date();
+      var yearsBackDate = (bday = new Date(
+        now.getFullYear() - 18,
+        now.getMonth(),
+        now.getDay()
+      ));
+      var max = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate()),
+        tomorrow = new Date(new Date().setDate(new Date().getDate() + 1));
+      
+      var inputTaken = 0;
+      
+      $(document).ready(function() {
+        constMessages();
+        $(".user-input").attr("placeholder", inputArray[0].placeholder);
+        $(".send-icon").on("click", addUserMessage);
+      });
+      
+      var appointment = {
+        date: "",
+        name: ""
+      };
+      var constMessages = function() {
+        var message = "";
+        $(".first").addClass("messageAmimation");
+        showLoader();
+        setTimeout(function() {
+          message =
+            "Let's start with a Time Joke.<strong>What is a frog's favorite year?</strong><br><strong>Leap year!</strong>🕑";
+          addMessage(message, true);
+          hideLoader();
+        }, 1000);
+        setTimeout(function() {
+          message = "<strong>What is your Name?<strong> I can remeber Name! 👌";
+          addMessage(message, true);
+          hideLoader();
+        }, 2000);
+      };
+      var showLoader = function(bot) {
+        var message =
+          '<li class="loaderMessage">' +
+          '<div class="message-holder-left">' +
+          '<div class="loading-dots">' +
+          '<span class="dot one">.</span>' +
+          '<span class="dot two">.</span>' +
+          '<span class="dot three">.</span>' +
+          "</div>" +
+          "</div>" +
+          "</li>";
+        $(".chatbot-body")
+          .find(".messages-holder")
+          .append(message);
+      };
+      var hideLoader = function() {
+        $(".loaderMessage").remove();
+      };
+      var addDelay = function() {
+        setTimeout(function() {
+          showLoader();
+        }, 2000);
+        hideLoader();
+      };
+      
+      var addUserMessage = function() {
+        console.log("asdasdas");
+        var usermessage = $("#user-input").val();
+        if (usermessage == undefined || usermessage == null || usermessage == "")
+          return;
+        addMessage(usermessage, false);
+        $("#user-input").val("");
+      };
+      var addMessage = function(message, bot) {
+        $(".messages-list").animate(
+          {
+            scrollTop: $(".messages-list").get(0).scrollHeight
+          },
+          1000
+        );
+        MessageClass = "user-message";
+        messageHolderPosition = "message-holder-right";
+        if (bot) {
+          MessageClass = "bot-message";
+          messageHolderPosition = "message-holder-left";
+          showLoader();
+        }
+        $(".chatbot-body")
+          .find(".messages-holder")
+          .append(
+            '<li class="' +
+              MessageClass +
+              '">' +
+              '<div class="' +
+              messageHolderPosition +
+              '">' +
+              '<div class="message">' +
+              message +
+              " </div>" +
+              '<div class="message-time">' +
+              "Today, 12:07 PM" +
+              "</div>" +
+              "</div>" +
+              "</li>"
+          );
+        if (!bot) {
+          addBotMessage(inputTaken, message);
+          inputTaken++;
+          updateResponse(inputTaken);
+        }
+        hideLoader();
+      };
+      
+      var inputArray = [
+        { type: "input", placeholder: "Enter your name" },
+        {
+          type: "date",
+          placeholder: "Please enter you date of birth",
+          args: { minDate: "", maxDate: bday }
+        },
+        {
+          type: "appointmentDate",
+          placeholder: "Please enter Date",
+          args: {
+            minDate: tomorrow,
+            maxDate: max,
+            invalid: [
+              { date: "06/04/2000", name: "hemanshu's Birthday" },
+              { date: "06/22/2018", name: "Doctor" },
+              { date: "06/24/2018", name: "Annual Day" },
+              { date: "06/26/2018", name: "Holiday" },
+              { date: "06/30/2018", name: "Not free" }
+            ]
+          }
+        },
+        {
+          type: "appointmentTime",
+          placeholder: "Please enter time for appointment",
+          args: {
+            invalid: [
+              { start: "00:00", end: "08:59" },
+              { start: "17:01", end: "23:59" }
+            ]
+          }
+        }
+      ];
+      
+      var addBotMessage = function(inputTaken, usermessage) {
+        var status = inputArray[inputTaken];
+        var placeholder = status.placeholder;
+        var args = status.args;
+        $(".user-input").attr("placeholder", placeholder);
+        switch (status.type) {
+          case "input":
+            addMessage(
+              "Hey I remember your name <b style=text-transform:uppercase>" +
+                usermessage +
+                "</b>",
+              true
+            );
+            addMessage(
+              "<b style=text-transform:uppercase>" +
+                usermessage +
+                "</b>, Can I know your Date of Birth",
+              true
+            );
+            break;
+          case "date":
+            addMessage("I have your date of birth now " + usermessage, true);
+            addMessage("Let's see if I can set you up a Doctor's appointment", true);
+            break;
+          case "appointmentDate":
+            addMessage("You have selected a date  " + usermessage, true);
+            appointment.date = usermessage;
+            addMessage("Now select a time for the appointment ", true);
+            break;
+          case "appointmentTime":
+            appointment.date += " " + usermessage;
+            addMessage(
+              "Your Appointment is now set Up on <b>" + appointment.date + "</b>",
+              true
+            );
+            break;
+        }
+      };
+      var updateResponse = function(inputTaken) {
+        var status = inputArray[inputTaken];
+        if (status == undefined || status == null) {
+          addMessage("Successfully completed...", true);
+          $(".user-input").attr("placeholder", "All done!");
+          $(".user-input").mobiscroll("hide");
+          $(".user-input").attr("disabled", true);
+          addPadding();
+          return;
+        }
+        var placeholder = status.placeholder;
+        var args = status.args;
+        $(".user-input").attr("placeholder", placeholder);
+        switch (status.type) {
+          case "date":
+            $(".user-input")
+              .mobiscroll()
+              .date({
+                display: "inline",
+                headerText: placeholder,
+                max: args.maxDate,
+                onInit: function(event, inst) {
+                  addPadding();
+                }
+              });
+            break;
+          case "appointmentDate":
+            var labels = [];
+            var invalids = [];
+            for (var i = 0; i < args.invalid.length; i++) {
+              var mydate = new Date(args.invalid[i].date);
+              var labelInput = {};
+              labelInput.d = mydate;
+              labelInput.text = args.invalid[i].name;
+              labelInput.color =
+                colorArray[Math.floor(Math.random() * colorArray.length)];
+              labels.push(labelInput);
+              invalids.push(mydate);
+            }
+            $(".user-input")
+              .mobiscroll()
+              .calendar({
+                display: "inline",
+                headerText: placeholder,
+                min: args.minDate,
+                max: args.maxDate,
+                mode: "scroller",
+                labels: labels,
+                invalid: invalids,
+                onInit: function(event, inst) {
+                  addPadding();
+                }
+              });
+            break;
+          case "appointmentTime":
+            $(".user-input")
+              .mobiscroll()
+              .time({
+                display: "inline",
+                headerText: placeholder,
+                min: args.minDate,
+                max: args.maxDate,
+                mode: "scroller",
+                invalid: args.invalid,
+                onInit: function(event, inst) {
+                  addPadding();
+                }
+              });
+            break;
+        }
+      };
+      
+      var addPadding = function() {
+        var padding = $(".input-block").height();
+        // $(".messages-list").css("padding-bottom", padding);
+        $(".messages-list")
+          .css("height", "100%")
+          .css("height", "-=" + padding);
+      };
+      
+  </script>

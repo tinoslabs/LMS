@@ -1,0 +1,13 @@
+{% extends "lecture/lecture_base.html" %}
+{% load static %}
+
+{% block content %}
+          <!-- / Navbar -->
+            <h2>Edit Course Resource</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}               
+                <button type="submit" class="btn btn-primary">Update Resource</button>
+            </form>
+            
+{% endblock %}

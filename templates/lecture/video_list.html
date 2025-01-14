@@ -1,0 +1,41 @@
+{% extends "lecture/lecture_base.html" %}
+{% load static %}
+
+{% block content %}
+            <h2>Video List</h2>
+            <a href="{% url 'add_video' %}" class="btn btn-success mb-3">Add Neww Video</a>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Thumbnail</th>
+                        <th>Title</th>
+                        <th>Course</th>
+                        <th>Lesson</th>
+                        <th>Title</th>
+                        <th>Youtube ID</th>
+                        <th>Duration</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for video in videos %}
+                        <tr>
+                            <td><img src="{{ video.thumbnail.url }}" alt="Thumbnail" style="width: 50px; height: 50px;"></td>
+                            <td>{{ video.title }}</td>
+                            <td>{{ video.course }}</td>
+                            <td>{{ video.lesson }}</td>
+                            <td>{{ video.title }}</td>
+                            <td>{{ video.youtube_id }}</td>
+                            <td>{{ video.time_duration }}</td>
+                            <td>
+                                <a href="{% url 'update_video' video.id %}" class="btn btn-primary btn-sm">Edit</a>
+                                <form method="POST" action="{% url 'delete_video' video.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    {% endblock %}

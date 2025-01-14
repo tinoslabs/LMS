@@ -1,0 +1,22 @@
+{% block content %}
+<h2>Instructor Approval</h2>
+
+{% if instructors %}
+    <ul>
+        {% for instructor in instructors %}
+            <li>
+                {{ instructor.username }} - {{ instructor.email }}
+                <form method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_id" value="{{ instructor.id }}">
+                    <button type="submit" name="action" value="approve">Approve</button>
+                    <button type="submit" name="action" value="reject">Reject</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No instructors awaiting approval.</p>
+{% endif %}
+
+{% endblock %}
