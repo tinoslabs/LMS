@@ -1,55 +1,88 @@
-.singel-course .thum .image {
-    width: 100%; /* Ensure the image container takes full width */
-    height: 200px; /* Set a fixed height for the image container */
-    overflow: hidden; /* Hide anything that goes outside the container */
+ /* Add these styles to your CSS file */
+
+
+
+ .category-menu {
+background: #fff;
+padding: 20px;
+border-radius: 8px;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.singel-course .thum .image img {
+.category-title {
+color: #07294d;
+font-size: 20px;
+font-weight: 600;
+margin-bottom: 20px;
+padding-bottom: 10px;
+border-bottom: 1px solid #eee;
+}
+
+.category-list {
+list-style: none;
+padding: 0;
+margin: 0;
+}
+
+.category-item {
+margin-bottom: 8px;
+}
+
+.category-link {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 10px 15px;
+color: #666;
+text-decoration: none;
+border-radius: 5px;
+transition: all 0.3s ease;
+}
+
+.category-link:hover {
+background: #edf3ff;
+color: #0056b3;
+transform: translateX(5px);
+}
+
+.category-name {
+font-size: 15px;
+font-weight: 500;
+}
+
+.category-icon {
+font-size: 12px;
+opacity: 0;
+transform: translateX(-10px);
+transition: all 0.3s ease;
+}
+
+.category-link:hover .category-icon {
+opacity: 1;
+transform: translateX(0);
+}
+
+/* Active state styling */
+.category-item.active .category-link {
+background: #0056b3;
+color: #fff;
+}
+
+.category-item.active .category-icon {
+opacity: 1;
+transform: translateX(0);
+}
+
+/* Hover effect for active item */
+.category-item.active .category-link:hover {
+background: #004494;
+}
+
+
+
+.fixed-height img {
+    height: 200px; /* Adjust the height as needed */
     width: 100%;
-    height: 100%;
-    object-fit: cover; /* Ensure the image covers the container without distortion */
+    object-fit: cover; /* Ensures the image fills the container without distortion */
+    border-radius: 5px; /* Optional: for rounded corners */
 }
-
-.singel-course .cont h4 {
-    display: -webkit-box;            /* Use a flexbox-like container */
-    -webkit-line-clamp: 2;          /* Limit to 2 lines */
-    -webkit-box-orient: vertical;   /* Set box orientation */
-    overflow: hidden;               /* Hide any content beyond the box */
-    text-overflow: ellipsis;        /* Add ellipsis (...) if the title exceeds 2 lines */
-    font-size: 16px;                /* Set a fixed font size */
-    line-height: 1.4;               /* Adjust line height for readability */
-    height: 2.8em;                  /* Ensure the height accommodates 2 lines */
-}
-
-.course-teacher {
-    display: flex;
-    align-items: center;  /* Align items vertically centered */
-    justify-content: flex-start;  /* Align items horizontally at the start */
-    gap: 15px;  /* Adjust the space between the items */
-}
-
-.course-teacher .thum {
-    flex-shrink: 0;  /* Prevent the image from shrinking */
-}
-
-.course-teacher .name h6 {
-    margin: 0;  /* Remove any default margin */
-}
-
-.course-teacher .admin ul {
-    display: flex;
-    gap: 10px;  /* Space between the list items */
-    margin: 0;  /* Remove any default margin */
-    padding: 0;  /* Remove any default padding */
-}
-
-.course-teacher .admin ul li {
-    list-style: none;  /* Remove bullet points from list items */
-}
-
-@media (max-width: 768px) {
-    .course-teacher {
-        flex-wrap: nowrap;  /* Ensure that content stays in a single row even on small screens */
-    }
-}
-

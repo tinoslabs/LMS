@@ -1,9 +1,11 @@
 {% extends "base-1.html" %}
+
+{% block title %}
+    <title>Edubin - Home</title>
+{% endblock %}
+
 {% load static %}
 
-{% block css_style %}
-    <link rel="stylesheet" href="{% static 'css/course_img.css' %}">
-{% endblock %}
 
 {% block content %}
     
@@ -38,7 +40,7 @@
                             <p data-animation="fadeInUp" data-delay="1.3s">Donec vitae sapien ut libearo venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt  Sed fringilla mauri amet nibh.</p>
                             <ul>
                                 <li><a data-animation="fadeInUp" data-delay="1.6s" class="main-btn" href="#">Read More</a></li>
-                                <li><a data-animation="fadeInUp" data-delay="1.9s" class="main-btn main-btn-2" href="#">Get Started</a></li>
+                                <li><a data-animation="fadeInUp" data-delay="1.9s" class="main-btn main-btn-2" href="{% url 'login_view' %}">Get Started</a></li>
                             </ul>
                         </div>
                     </div>
@@ -330,50 +332,25 @@
                 <div class="col-lg-6 offset-lg-1">
                     <div class="teachers mt-20">
                         <div class="row">
+                            {% for teacher in top_teachers %}
                             <div class="col-sm-6">
                                 <div class="singel-teachers mt-30 text-center">
                                     <div class="image">
-                                        <img src="{% static 'images/teachers/t-1.jpg' %}" alt="Teachers">
+                                        <img src="{{ teacher.profile_image.url }}" alt="Teachers">
                                     </div>
                                     <div class="cont">
-                                        <a href="teachers-singel.html"><h6>Mark alen</h6></a>
-                                        <span>Vice chencelor</span>
+                                        <a href="{% url 'teachers_details' teacher.id %}"><h6>{{ teacher.username }}</h6></a>
+                                        <span>
+                                            {% if teacher.instructor.designation %}
+                                                {{ teacher.instructor.designation }}
+                                            {% else %}
+                                                ...
+                                            {%endif%}
+                                        </span>
                                     </div>
                                 </div> <!-- singel teachers -->
                             </div>
-                            <div class="col-sm-6">
-                                <div class="singel-teachers mt-30 text-center">
-                                    <div class="image">
-                                        <img src="{% static 'images/teachers/t-2.jpg' %}" alt="Teachers">
-                                    </div>
-                                    <div class="cont">
-                                        <a href="teachers-singel.html"><h6>David card</h6></a>
-                                        <span>Pro chencelor</span>
-                                    </div>
-                                </div> <!-- singel teachers -->
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="singel-teachers mt-30 text-center">
-                                    <div class="image">
-                                        <img src="{% static 'images/teachers/t-3.jpg' %}" alt="Teachers">
-                                    </div>
-                                    <div class="cont">
-                                        <a href="teachers-singel.html"><h6>Rebeka alig</h6></a>
-                                        <span>Pro chencelor</span>
-                                    </div>
-                                </div> <!-- singel teachers -->
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="singel-teachers mt-30 text-center">
-                                    <div class="image">
-                                        <img src="{% static 'images/teachers/t-4.jpg' %}" alt="Teachers">
-                                    </div>
-                                    <div class="cont">
-                                        <a href="teachers-singel.html"><h6>Hanna bein</h6></a>
-                                        <span>Aerobics head</span>
-                                    </div>
-                                </div> <!-- singel teachers -->
-                            </div>
+                            {% endfor %}
                         </div> <!-- row -->
                     </div> <!-- teachers -->
                 </div>

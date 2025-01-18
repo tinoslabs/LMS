@@ -53,7 +53,6 @@ urlpatterns = [
     path('courses/filter_course',views.filter_course,name="filter_course"),
     # path('courses/<int:course_id>',views.COURSE_DETAILS,name="course_details"),
 
-    path('contact',views.CONTACT_US,name='contact_us'),
     path('about',views.ABOUT_US,name='about_us'),
     path('search', views.SEARCH_COURSE, name='search_cousre'),
            
@@ -145,7 +144,7 @@ urlpatterns = [
     
     # path('list_my_course', views.list_my_course, name='list_my_course'), moved to studentapp
     # path('course_filter', views.course_filter, name='course_filter'),
-    path('course_filter/', views.course_filter, name='course_filter'),
+    path('course_filter/', views.course_filter, name='course_filter'),   # to display all courses if the category_id is absent
     path('course_filter/<int:category_id>/', views.course_filter, name='course_filter'),
     
     # path('create_instructor',views.create_instructor, name='create_instructor'), moved
@@ -156,5 +155,10 @@ urlpatterns = [
     # for otp
     path('forgot-password/', views.request_otp_view, name='request_otp_view'),
     path('verify-otp/', views.verify_otp_view, name='verify_otp_view'),
+
+    # teachers list
+    path('teachers',views.teachers, name='teachers'),  # all teachers list
+    path('teachers_details/<int:teacher_id>/', views.teachers_details, name='teachers_details'), # single teachers detail   ... in html teachers-singel.html is placed need to replace.
+
 
 ]
