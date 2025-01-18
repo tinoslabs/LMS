@@ -61,8 +61,3 @@ def student_list(request):
         'students': students
     })    
 
-def teachers(request):
-    return render(request,'teachers.html')
-
-def teachers_details(request):
-    return render(request,'teachers-details.html')

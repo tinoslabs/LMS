@@ -1,6 +1,20 @@
 {% extends 'base-1.html' %}
-{% block title %}Watch Course{% endblock %}
+
+{% block title %}
+    <title>Edubin - Watch Course</title>
+{% endblock %}
+
 {% load static %}
+
+{% block css_style %}
+<!-- Youtube Icon -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<!-- Google Fonts -->
+
+<link rel="stylesheet" href="{% static 'css/new_watch-course-updated.css' %}">
+
+{% endblock %}
+
 {% load course_tags %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/watch-course-updated.css' %}">
@@ -16,7 +30,7 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href=" {% url 'index' %} ">Home</a></li>
-                            <li class="breadcrumb-item"><a href="#">Courses</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'course_filter' %}">Courses</a></li>
                             <li class="breadcrumb-item active" aria-current="page"> {{ course.title }} </li>
                         </ol>
                     </nav>
@@ -29,15 +43,21 @@
 <!--====== PAGE BANNER PART ENDS ======-->
 
 
+
 <div class="course_video_container">
     <div class="course_video_main-video-container">
-        <h3 class="course_video_main-video__title">{{ video.title }}</h3>
+        <h3 class="course_video_main-video__title">{{ Video.title }}</h3>
         <div class="video-container">
-            <video class="course_video_main-video" src="{{ video.video.url }}" controls></video>
+            <video class="course_video_main-video" controls poster="{{ Video.thumbnail.url}}">
+                <source src="{{ Video.video.url}}" type="video/mp4" />
+            </video>
         </div>    
     </div>
 
+    
+
     <div class="playlist-container">
+        
         <div class="search-container">
             <span class="search-icon">
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
@@ -47,79 +67,69 @@
             </span>
             <input type="search" placeholder="Search item">
         </div>
-
-        <div id="accordionCurriculum">
-            
-            {% for lesson in course.lesson_set.all %}
-<div class="lesson-item">
-    <div class="lesson-header" onclick="toggleLesson(this)">
-        <span class="expand-icon">+</span>
-        <span class="lesson-title">{{ lesson.name }}</span>
-    </div>
-    <div class="video-list">
         
-        {% if lesson.videomodel_set.all %}
-            {% for video in lesson.videomodel_set.all %}
-            
-            <div class="border-top px-5 border-color-20 py-4 min-height-70 d-md-flex align-items-center">
-                <div class="d-flex align-items-center me-auto mb-4 mb-md-0">
-                    <div class="text-secondary d-flex">
-                        <!-- <i class="fab fa-youtube" aria-hidden="true" style="color: red;"></i> -->
+        <!-- Search result container -->
+        <div class="search-result-container" style="display: none;"></div>
+        
+        <div id="accordionCurriculum">
+            {% for lesson in course.lesson_set.all %}
+                <div class="lesson-item">
+                    <div class="lesson-header" onclick="toggleLesson(this)">
+                        <span class="expand-icon">+</span>
+                        <span class="lesson-title">{{ lesson.name }}</span>
                     </div>
-                    
-                    {% if check_enroll or video.preview %}
-                        <a href="/course/{{ course.id }}/watch-course/{{ video.id }}">
-                            <div class="ms-4 text-white video-title">
-                                {{ video.title }} &nbsp;
-                            </div>
-                        </a>
-
-                        <div class="d-flex align-items-center overflow-auto overflow-md-visible flex-shrink-all">
-                            <div class="badge btn-orange-soft text-white-70 me-5 font-size-sm fw-normal py-2 duration-border">
-                                {{ video.time_duration }} min &nbsp; &nbsp;
-                            </div>
-                            <a href="/course/{{ course.id }}/watch-course/{{ video.id }}" class="text-secondary d-flex play-icon">
-                                <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12.8704 6.15374L3.42038 0.328572C2.73669 -0.0923355 1.9101 -0.109836 1.20919 0.281759C0.508282 0.673291 0.0898438 1.38645 0.0898438 2.18929V13.7866C0.0898438 15.0005 1.06797 15.9934 2.27016 16C2.27344 16 2.27672 16 2.27994 16C2.65563 16 3.04713 15.8822 3.41279 15.6591C3.70694 15.4796 3.79991 15.0957 3.62044 14.8016C3.44098 14.5074 3.05697 14.4144 2.76291 14.5939C2.59188 14.6982 2.42485 14.7522 2.27688 14.7522C1.82328 14.7497 1.33763 14.3611 1.33763 13.7866V2.18933C1.33763 1.84492 1.51713 1.53907 1.81775 1.3711C2.11841 1.20314 2.47294 1.21064 2.76585 1.39098L12.2159 7.21615C12.4999 7.39102 12.6625 7.68262 12.6618 8.01618C12.6611 8.34971 12.4974 8.64065 12.2118 8.81493L5.37935 12.9983C5.08548 13.1783 4.9931 13...." fill="white"></path>
-                                </svg>                                
-                            </a>
-                        </div>
-                    {% else %}
-                        <!-- Tooltip only shows when the user has not enrolled or the video is not a preview -->
-                        <!-- Tooltip with an anchor tag -->
-                        <a href="payment" class="enroll-tooltip" data-toggle="tooltip" title="Enroll This Course!">
-                            <span class="ms-4 text-white fw-bold video-title">
-                                {{ video.title }} &nbsp;
-                            </span>
-                        </a>
+                    <div class="video-list">
 
 
-                        <div class="d-flex align-items-center overflow-auto overflow-md-visible flex-shrink-all">
-                            <div class="badge btn-orange-soft text-white-70 me-5 font-size-sm fw-normal py-2 duration-border">
-                                {{ video.time_duration }} min &nbsp; &nbsp;
+                        {% if lesson.videomodel_set.all %}
+                            {% for video in lesson.videomodel_set.all %}
+                            <div class="video-item {% if video.id == Video.id %}selected_video{% endif %} ">
+                                <div class="video-content">
+                                    <i class="bi bi-youtube"></i>&nbsp;
+                            
+                                    {% if check_enroll or video.preview %}
+                                    <a href="/course/{{ course.id }}/watch-course/{{ video.id }}" class="video-title">
+                                        {{ video.title }}
+                                    </a>
+                                    {% else %}
+                                    <a href="payment" class="video-title enroll-tooltip" data-toggle="tooltip" title="Enroll This Course!">
+                                        {{ video.title }}
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            
+                                <div class="video-info">
+                                    <span class="video-time">{{ video.time_duration }} min</span>
+                                    {% if check_enroll or video.preview %}
+                                    <a href="/course/{{ course.id }}/watch-course/{{ video.id }}" class="play-icon">
+                                        <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12.8704 6.15374L3.42038 0.328572C2.73669 -0.0923355 1.9101 -0.109836 1.20919 0.281759C0.508282 0.673291 0.0898438 1.38645 0.0898438 2.18929V13.7866C0.0898438 15.0005 1.06797 15.9934 2.27016 16C2.27344 16 2.27672 16 2.27994 16C2.65563 16 3.04713 15.8822 3.41279 15.6591C3.70694 15.4796 3.79991 15.0957 3.62044 14.8016C3.44098 14.5074 3.05697 14.4144 2.76291 14.5939C2.59188 14.6982 2.42485 14.7522 2.27688 14.7522C1.82328 14.7497 1.33763 14.3611 1.33763 13.7866V2.18933C1.33763 1.84492 1.51713 1.53907 1.81775 1.3711C2.11841 1.20314 2.47294 1.21064 2.76585 1.39098L12.2159 7.21615C12.4999 7.39102 12.6625 7.68262 12.6618 8.01618C12.6611 8.34971 12.4974 8.64065 12.2118 8.81493L5.37935 12.9983C5.08548 13.1783 4.9931 13.5623 5.17304 13.8562C5.35295 14.1501 5.73704 14.2424 6.03092 14.0625L12.8625 9.87962C13.5166 9.48059 13.9081 8.78496 13.9096 8.01868C13.9112 7.25249 13.5226 6.55524 12.8704 6.15374Z" fill="white"></path>
+                                        </svg>
+                                    </a>
+                                    {% else %}
+                                    <a href="payment" class="play-icon">
+                                        <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12.8704 6.15374L3.42038 0.328572C2.73669 -0.0923355 1.9101 -0.109836 1.20919 0.281759C0.508282 0.673291 0.0898438 1.38645 0.0898438 2.18929V13.7866C0.0898438 15.0005 1.06797 15.9934 2.27016 16C2.27344 16 2.27672 16 2.27994 16C2.65563 16 3.04713 15.8822 3.41279 15.6591C3.70694 15.4796 3.79991 15.0957 3.62044 14.8016C3.44098 14.5074 3.05697 14.4144 2.76291 14.5939C2.59188 14.6982 2.42485 14.7522 2.27688 14.7522C1.82328 14.7497 1.33763 14.3611 1.33763 13.7866V2.18933C1.33763 1.84492 1.51713 1.53907 1.81775 1.3711C2.11841 1.20314 2.47294 1.21064 2.76585 1.39098L12.2159 7.21615C12.4999 7.39102 12.6625 7.68262 12.6618 8.01618C12.6611 8.34971 12.4974 8.64065 12.2118 8.81493L5.37935 12.9983C5.08548 13.1783 4.9931 13.5623 5.17304 13.8562C5.35295 14.1501 5.73704 14.2424 6.03092 14.0625L12.8625 9.87962C13.5166 9.48059 13.9081 8.78496 13.9096 8.01868C13.9112 7.25249 13.5226 6.55524 12.8704 6.15374Z" fill="white"></path>
+                                        </svg>
+                                    </a>
+                                    {% endif %}
+                                </div>
                             </div>
-                            <a href="payment" class="text-secondary d-flex play-icon">
-                                <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12.8704 6.15374L3.42038 0.328572C2.73669 -0.0923355 1.9101 -0.109836 1.20919 0.281759C0.508282 0.673291 0.0898438 1.38645 0.0898438 2.18929V13.7866C0.0898438 15.0005 1.06797 15.9934 2.27016 16C2.27344 16 2.27672 16 2.27994 16C2.65563 16 3.04713 15.8822 3.41279 15.6591C3.70694 15.4796 3.79991 15.0957 3.62044 14.8016C3.44098 14.5074 3.05697 14.4144 2.76291 14.5939C2.59188 14.6982 2.42485 14.7522 2.27688 14.7522C1.82328 14.7497 1.33763 14.3611 1.33763 13.7866V2.18933C1.33763 1.84492 1.51713 1.53907 1.81775 1.3711C2.11841 1.20314 2.47294 1.21064 2.76585 1.39098L12.2159 7.21615C12.4999 7.39102 12.6625 7.68262 12.6618 8.01618C12.6611 8.34971 12.4974 8.64065 12.2118 8.81493L5.37935 12.9983C5.08548 13.1783 4.9931 13...." fill="white"></path>
-                                </svg>                                
-                            </a>
-                        </div>
-                    {% endif %}
+                            
+                            {% endfor %}
+                        {% endif %}
+ 
+                    </div>
                 </div>
-
-                
-            </div>
-            
             {% endfor %}
-        {% endif %}
-    </div>
-</div>
-{% endfor %}
 
 
         </div>
+        
+
     </div>
 </div>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -170,20 +180,80 @@
     });
 
     function toggleLesson(element) {
-        const videoList = element.nextElementSibling;
-        const expandIcon = element.querySelector('.expand-icon');
-        
-        // Close all other video lists
-        document.querySelectorAll('.video-list').forEach(list => {
-            if (list !== videoList && list.classList.contains('active')) {
-                list.classList.remove('active');
-                list.previousElementSibling.querySelector('.expand-icon').textContent = '+';
-            }
-        });
-        
-        // Toggle current video list
-        videoList.classList.toggle('active');
-        expandIcon.textContent = videoList.classList.contains('active') ? '-' : '+';
+    // Get the video list associated with this lesson
+    const videoList = element.nextElementSibling;
+    const expandIcon = element.querySelector('.expand-icon');
+
+    // Toggle the 'active' class on the video list to show/hide it
+    if (videoList.classList.contains('active')) {
+        videoList.classList.remove('active');
+        videoList.style.display = 'none'; // Hide the video list
+        expandIcon.textContent = '+'; // Change icon to '+'
+    } else {
+        videoList.classList.add('active');
+        videoList.style.display = 'block'; // Show the video list
+        expandIcon.textContent = '-'; // Change icon to '-'
     }
+}
+
+
 </script>
+
+{% comment %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.querySelector('.search-container input');
+    const searchResultContainer = document.querySelector('.search-result-container');
+
+    searchInput.addEventListener('input', function (e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        searchResultContainer.style.display = searchTerm ? 'block' : 'none';
+        searchResultContainer.innerHTML = '';
+
+        if (!searchTerm) return;
+
+        const lessonItems = document.querySelectorAll('.lesson-item');
+        let resultsFound = false;
+
+        lessonItems.forEach(lesson => {
+            const lessonTitle = lesson.querySelector('.lesson-title').textContent.toLowerCase();
+            const videos = lesson.querySelectorAll('.video-item');
+
+            if (lessonTitle.includes(searchTerm)) {
+                resultsFound = true;
+                const lessonLink = createSearchResultItem(lessonTitle, lesson.querySelector('.lesson-header').getAttribute('onclick'));
+                searchResultContainer.appendChild(lessonLink);
+            }
+
+            videos.forEach(video => {
+                const videoTitle = video.querySelector('.video-title').textContent.toLowerCase();
+                if (videoTitle.includes(searchTerm)) {
+                    resultsFound = true;
+                    const videoLink = createSearchResultItem(videoTitle, video.querySelector('a.video-title').href);
+                    searchResultContainer.appendChild(videoLink);
+                }
+            });
+        });
+
+        if (!resultsFound) {
+            const noResultMessage = document.createElement('div');
+            noResultMessage.textContent = 'No results found.';
+            noResultMessage.classList.add('search-result-item');
+            searchResultContainer.appendChild(noResultMessage);
+        }
+    });
+
+    function createSearchResultItem(title, href) {
+        const link = document.createElement('a');
+        link.href = href;
+        link.classList.add('search-result-item');
+        link.textContent = title;
+        return link;
+    }
+});
+
+</script>
+{% endcomment %}
+
+
 {% endblock %}

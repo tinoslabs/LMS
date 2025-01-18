@@ -15,8 +15,8 @@ import secrets
 
 from django.contrib import messages
 from .models import User
+from django.db.models import Count
 
-from django.contrib import messages
 # from .forms import UserRegistrationForm
 
 from .models import VideoProgress,Categories,Course,Level,Video,Categoriestheory,Author,CourseResource,Language,What_u_learn,Requirements,Lesson,VideoModel,Instructor
@@ -94,7 +94,7 @@ def profile_view(request):
             if request.user.role == 'admin':
                 return redirect('admin_profile')  # Replace with the correct URL name for admin
             elif request.user.role == 'student':
-                print("Profile updated successfully")
+                # print("Profile updated successfully")
                 return redirect('student_profile')  # Replace with the correct URL name for student
             elif request.user.role == 'instructor':
                 return redirect('lecture_profile')  # Replace with the correct URL name for instructor
@@ -207,6 +207,13 @@ def HOME(request):
     }
     return render(request,'Main/home.html',context)
 
+def get_top_instructors():
+    top_instructors = (
+        User.objects.filter(role='instructor')
+        .annotate(course_count=Count('instructor__course'))
+        .order_by('-course_count')[:4]
+    )
+    return top_instructors
 
 def index(request):
     category=Categories.objects.all().order_by('id')[0:6]
@@ -214,11 +221,14 @@ def index(request):
     course=Course.objects.filter(status='PUBLISH').order_by('-id')
     courser=CourseResource.get_all_category(CourseResource)
     
+    top_teachers = get_top_instructors
+
     context={
         'category':category,
         'course':course,
         'theory':theory,
         'courser':courser, 
+        'top_teachers':top_teachers,
     }
     return render(request,'index.html',context)
 
@@ -287,13 +297,6 @@ def filter_course(request):
     return JsonResponse({'data': t})
 
 
-def CONTACT_US(request):
-    category=Categories.get_all_category(Categories)
-    context={
-        'category':category,
-
-    }
-    return render(request,'Main/contact_us.html',context)
 
 
 def ABOUT_US(request):
@@ -367,43 +370,29 @@ def get_course_data(course_id, user=None):
     category = Categories.objects.all().order_by('id')[0:6] #category on nav bar 
 
     check_enroll = None
-    completed_videos = []
-    next_video_id = None
+    
 
     if user and user.is_authenticated:
         check_enroll = UserCourse.objects.filter(user=user, course=course).first()
-
-        # Fetch completed videos for the user
-        completed_video_progress = VideoProgress.objects.filter(user=user, video__course=course, status=True)
-        completed_videos = list(completed_video_progress.values_list('video_id', flat=True))
-
-        # Determine the next video to unlock
-        all_videos = VideoModel.objects.filter(course=course).order_by('id')
-        for video in all_videos:
-            if video.id not in completed_videos:
-                next_video_id = video.id
-                break
-
+        
     return {
         'course': course,
         'course_time_duration': course_time_duration,
         'lessons': lessons,
         'check_enroll': check_enroll,
-        'completed_videos': completed_videos,
-        'next_video_id': next_video_id,
         'category':category
     }
 
 
 def course_detail(request, course_id):
-    course_data = get_course_data(course_id, request.user)
+    course_data = get_course_data(course_id, request.user)   # another function, place just above
     return render(request, 'courses-detail.html', course_data)
 
 def WATCH_COURSE(request, course_id, video_id):
     # category=Categories.objects.all().order_by('id')[0:6]
     course_data = get_course_data(course_id, request.user)
-    video = get_object_or_404(VideoModel, id=video_id, course=course_data['course'])
-    course_data['video'] = video
+    Video = get_object_or_404(VideoModel, id=video_id, course=course_data['course'])
+    course_data['Video'] = Video
     # course_data['category']=category
     return render(request, 'course/watch-course-updated.html', course_data)
 
@@ -418,10 +407,10 @@ def PAGE_NOT_FOUND(request):
 
  
 
-import razorpay
+# import razorpay
 
 # Initialize the Razorpay client
-client = razorpay.Client(auth=("YOUR_API_KEY", "YOUR_API_SECRET"))
+# client = razorpay.Client(auth=("YOUR_API_KEY", "YOUR_API_SECRET"))
 
 def CHECKOUT(request, course_id):
     # Get the course
@@ -799,3 +788,43 @@ def verify_otp_view(request):
         return redirect('login_view')
 
     return render(request, 'registration/forgot_password.html', {'step': 'verify'})
+
+# teachers in index page
+def teachers(request):
+    category=Categories.get_all_category(Categories).order_by('id')[0:6]
+
+
+    teachers = User.objects.filter(role='instructor')
+
+    context={
+        'category':category,
+        'teachers':teachers
+        }
+    return render(request,'teachers.html',context)
+
+
+def teachers_details(request, teacher_id):
+    category=Categories.get_all_category(Categories).order_by('id')[0:6]
+
+
+    teacher = get_object_or_404(User,id = teacher_id)
+    try:
+        instructor = Instructor.objects.get(user = teacher)
+        my_courses = Course.objects.filter(author = instructor)
+        context={
+            'category':category,
+            'teacher':teacher,
+            'instructor':instructor,
+            'my_courses':my_courses
+            }
+    except:
+
+        context={
+            'category':category,
+            'teacher':teacher,
+            'instructor':None,
+            'courses':None
+            }
+    
+    return render(request,'teachers-details.html',context)
+
