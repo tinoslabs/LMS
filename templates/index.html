@@ -7,6 +7,10 @@
 {% load static %}
 
 
+{% block css_style %}
+<link rel="stylesheet" href="{% static 'css/course_img.css' %}">
+{% endblock %}
+
 {% block content %}
     
     <!--====== HEADER PART ENDS ======-->
@@ -224,10 +228,10 @@
                         
                             <div class="course-teacher">
                                 <div class="thum">
-                                    <a href="{{course.get_absolute_url}}"><img src="{{course.author.user.profile_image.url}}" alt="teacher"></a>
+                                    <a href="{% url 'teachers_details' course.author.user.id  %}"><img src="{{course.author.user.profile_image.url}}" alt="teacher"></a>
                                 </div>
                                 <div class="name">
-                                    <a href="{{course.get_absolute_url}}"><h6>{{course.author.user.username  }}</h6></a>
+                                    <a href="{% url 'teachers_details' course.author.user.id  %}"><h6>{{course.author.user.username  }}</h6></a>
                                 </div>
                                 <div class="admin">
                                     <ul>

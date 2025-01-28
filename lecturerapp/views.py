@@ -11,7 +11,7 @@ from testapp.models import User
 from django.contrib import messages
 from testapp.forms import UserRegistrationForm
 
-from testapp.models import Quiz,Categories,Course,Level,Video,Categoriestheory,Author,CourseResource,Language,What_u_learn,Requirements,Lesson,VideoModel,Instructor
+from testapp.models import Certificate,QuizResult,Quiz,Categories,Course,Level,Video,Categoriestheory,Author,CourseResource,Language,What_u_learn,Requirements,Lesson,VideoModel,Instructor
 from testapp.forms import QuestionForm,QuizForm,CategoryForm,AuthorForm,LevelForm,LanguageForm,CourseForm,CourseResourceForm,CategoriestheoryForm,WhatULearnForm,RequirementsForm,LessonForm,VideoForm,VideosForm,PasswordChangeForm,InstructorForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
@@ -628,3 +628,20 @@ def edit_quiz(request,quiz_id):
         quiz_form = QuizForm( instance = quiz, user = request.user )
     return render(request, 'lecture/quiz/edit_quiz.html', {'quiz_form':quiz_form} )
 
+
+
+def get_quiz_results_for_course(request, quiz_id):
+    # Step 1: Get the quiz for the given course (assuming there's one quiz per course)
+    quiz = get_object_or_404(Quiz, id=quiz_id) 
+    quiz_results = QuizResult.objects.filter(quiz=quiz).select_related('quiz')
+
+    return render(request, 'lecture/quiz/quiz_results.html', {'quiz_results':quiz_results} )
+
+def verify_result(request, quiz_result_id):
+    quiz_result = get_object_or_404(QuizResult, id=quiz_result_id)
+    certificate_obj, created =  Certificate.objects.get_or_create(
+                quiz_result = quiz_result,
+                verified = True,
+            )
+    print('reached')
+    return redirect('quiz_results', quiz_id = quiz_result.quiz.id)

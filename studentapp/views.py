@@ -10,21 +10,8 @@ from django.contrib import messages
 from testapp.forms import UserRegistrationForm
 from django.shortcuts import get_object_or_404, redirect,render
 
-from testapp.models import QuizResult,QuizAnswer,Question,Quiz,UserCourse,Categories,Course,Level,Video,Categoriestheory,Author,Language,CourseResource,What_u_learn,Requirements,Lesson,VideoModel,Instructor
+from testapp.models import Certificate,QuizResult,QuizAnswer,Question,Quiz,UserCourse,Categories,Course,Level,Video,Categoriestheory,Author,Language,CourseResource,What_u_learn,Requirements,Lesson,VideoModel,Instructor
 from testapp.forms import CategoryForm,AuthorForm,LevelForm,LanguageForm,CourseForm,CategoriestheoryForm,CourseResourceForm,WhatULearnForm,RequirementsForm,LessonForm,VideoForm,VideosForm,PasswordChangeForm,InstructorForm
-# from .settings import *
-
-# @login_required
-# def student_profile(request): defined in testapp
-#     if request.method == 'POST':
-#         profile_form = UserProfileForm(request.POST, request.FILES, instance=request.user)
-#         if profile_form.is_valid():
-#             profile_form.save()
-#             messages.success(request, 'Your profile has been updated successfully.')
-#             return redirect('student_profile')  
-#     else:
-#         profile_form = UserProfileForm(instance=request.user)
-#     return render(request, 'users/student_profile.html', {'profile_form': profile_form})
 
 
 def list_my_course(request):
@@ -34,10 +21,7 @@ def list_my_course(request):
     # Query the user's courses
     courses = UserCourse.objects.filter(user=request.user).select_related('course', 'course__category', 'course__author')
     
-    # Retrieve other data
-    category = Categories.objects.all().order_by('id')[:6]
-    theory = Categoriestheory.objects.all().order_by('id')[:6]
-    courser = CourseResource.get_all_category(CourseResource)
+    
     return render(request, 'student/list_my_course.html', {'courses':courses})
 
 
@@ -99,18 +83,6 @@ def quiz_question(request, quiz_id, question_index):
                 quiz_answer.selected_option = int(selected_option)
                 quiz_answer.save()
 
-            # Redirect to the next unanswered question or finish the quiz
-            # answered_questions = QuizAnswer.objects.filter(user=request.user, quiz=quiz)
-            # unanswered_questions = questions.exclude(id__in=answered_questions.values_list('question_id', flat=True))
-
-            # if unanswered_questions.exists():
-            #     next_question = unanswered_questions.first()
-            #     questions_list = list(questions)
-            #     next_question_index = questions_list.index(next_question) + 1  # Adjust for 1-based indexing
-            #     return redirect('quiz_question', quiz_id=quiz.id, question_index=next_question_index)
-            # else:
-            #     return redirect('quiz_complete', quiz_id=quiz.id)
-
             if zero_based_index >= 0 and zero_based_index < len(questions):
                 next_question_index = zero_based_index + 2
                 return redirect('quiz_question', quiz_id=quiz.id, question_index=next_question_index)
@@ -157,9 +129,6 @@ def quiz_complete(request, quiz_id):
     quiz_result, create = QuizResult.objects.get_or_create(
         user=request.user,
         quiz=quiz,
-        # correct_answers=correct_answers,
-        # total_questions=total_questions,
-        # score_percentage=score_percentage
     )
     quiz_result.correct_answers=correct_answers
     quiz_result.total_questions=total_questions
@@ -198,4 +167,16 @@ def quiz_result_all(request):
 
     return render(request, 'student/quiz_result_all.html', {
         'quiz_results': quiz_results,
+    })
+
+@login_required
+def student_certificates(request):
+    # Get certificates for the logged-in student
+    certificates = Certificate.objects.filter(
+        quiz_result__user=request.user,
+        uploaded=True
+    ).select_related('quiz_result', 'quiz_result__quiz')
+    
+    return render(request, 'student/certificates.html', {
+        'certificates': certificates
     })

@@ -37,7 +37,7 @@
                         <h2>Enrolled Courses</h2>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">My Courses</li>
                             </ol>
                         </nav>
@@ -83,7 +83,7 @@
                                 <span>(20 Reviews)</span>
                             <!-- </div> -->
                             <div style="max-width: 100%; width: 100%; overflow: hidden;">
-                                <a href="{{ course.get_absolute_url }}" style="display: block;">
+                                <a href="{% url 'course_detail' mycourse.course.id  %}" style="display: block;">
                                     <h4 style="margin: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
                                         {{ mycourse.course.title }}
                                     </h4>
@@ -92,15 +92,15 @@
                         
                             <div class="course-teacher">
                                 <div class="thum">
-                                    <a href="{{course.get_absolute_url}}"><img src="{{mycourse.course.author.user.profile_image.url}}" alt="teacher"></a>
+                                    <a href="{% url 'teachers_details' mycourse.course.author.user.id  %}"><img src="{{mycourse.course.author.user.profile_image.url}}" alt="teacher"></a>
                                 </div>
                                 <div class="name">
-                                    <a href="{{course.get_absolute_url}}"><h6>{{mycourse.course.author.user.username  }}</h6></a>
+                                    <a href="{% url 'teachers_details' mycourse.course.author.user.id  %}"><h6>{{mycourse.course.author.user.username  }}</h6></a>
                                 </div>
                                 <div class="admin">
                                     <ul>
-                                        <li><a href="{{course.get_absolute_url}}"><i class="fa fa-user"></i><span>31</span></a></li>
-                                        <li><a href="{{course.get_absolute_url}}"><i class="fa fa-heart"></i><span>10</span></a></li>
+                                        <li><a href="{% url 'course_detail' mycourse.course.id  %}"><i class="fa fa-user"></i><span>31</span></a></li>
+                                        <li><a href="{% url 'course_detail' mycourse.course.id  %}"><i class="fa fa-heart"></i><span>10</span></a></li>
                                     </ul>
                                 </div>
                             </div>

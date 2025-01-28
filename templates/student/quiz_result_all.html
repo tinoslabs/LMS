@@ -21,6 +21,7 @@
                                         <th>Course</th>
                                         <th>Percentage</th>
                                         <th>Action</th>
+                                        <th>Certificate Status</th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-border-bottom-0">
@@ -30,11 +31,24 @@
                                             <td>{{ result.quiz.title }}</td>
                                             <td>{{ result.quiz.course.author.user.username }}</td>
                                             <td>{{ result.quiz.course.title }}</td>
-                                            <td>{{ result.score_percentage }}%</td>
+                                            <td>
+                                                <div class="badge bg-label-primary">
+                                                    {{ result.score_percentage }}%
+                                                </div>
+                                            </td>
                                             <td>
                                                 <a href="{% url 'quiz_result' result.id %}" class="btn btn-primary btn-sm">
                                                     View Details
                                                 </a>
+                                            </td>
+                                            <td>
+                                                {% if result.certificate.uploaded %}
+                                                    <a href="{% url 'verify_result' result.id %}" class="btn btn-secondary btn-sm">Certificate Upload by {{result.certificate.uploaded_by.username}}</a>    
+                                                {% elif result.certificate.verified %}
+                                                    <span class="btn btn-secondary btn-sm" disabled>Certificate Not Uploaded</span>
+                                                {% else %}
+                                                    <span class="btn btn-secondary btn-sm disabled">Verification Pending</span>
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     {% empty %}
@@ -51,5 +65,18 @@
         </div>
     </div>
 </div>
+<style>
+    .modal-body object,
+    .modal-body img {
+        max-width: 100%;
+        margin: 0 auto;
+        display: block;
+    }
+    
+    .badge {
+        font-size: 0.9em;
+        padding: 0.5em 0.7em;
+    }
+</style>
 
 {% endblock %}

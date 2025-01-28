@@ -8,7 +8,7 @@ from testapp.models import User
 from django.contrib import messages
 from testapp.forms import UserRegistrationForm
 
-from testapp.models import Categories,Course,Level,Video,Categoriestheory,Author,Language,What_u_learn,Requirements,Lesson,VideoModel,Instructor
+from testapp.models import Certificate,Categories,Course,Level,Video,Categoriestheory,Author,Language,What_u_learn,Requirements,Lesson,VideoModel,Instructor
 from testapp.forms import CategoryForm,AuthorForm,LevelForm,LanguageForm,CourseForm,CategoriestheoryForm,WhatULearnForm,RequirementsForm,LessonForm,VideoForm,VideosForm,PasswordChangeForm,InstructorForm
 # from .settings import *
 
@@ -60,4 +60,28 @@ def student_list(request):
     return render(request, 'admin/student_list.html', {
         'students': students
     })    
+
+def get_verified_quiz_results(request):
+    # Step 1: Get the quiz for the given course (assuming there's one quiz per course)
+    verified_quiz_results = Certificate.objects.filter(verified = True)
+
+    return render(request, 'admin/quiz/verified_quiz_results.html', {'verified_quiz_results':verified_quiz_results} )
+
+def upload_certificate(request, verified_quiz_result_id):
+    if request.method == "POST" and 'certificate_file' in request.FILES:
+
+        verified_quiz_result = get_object_or_404(Certificate, id = verified_quiz_result_id)
+        
+        verified_quiz_result.certificate_file = request.FILES['certificate_file']
+        verified_quiz_result.uploaded_by = request.user
+        verified_quiz_result.uploaded = True
+        verified_quiz_result.save()
+        messages.success(request, "Certificate successfully uploaded.")
+
+        return redirect('verified_results') 
+    else:
+        messages.error(request, " Failed to Upload file...")
+        return redirect('verified_results') 
+
+    
 

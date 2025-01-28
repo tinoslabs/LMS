@@ -258,6 +258,7 @@ class Quiz(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="quizzes")
     title = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
+    published = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.title} - {self.course.title}"
@@ -287,7 +288,7 @@ class QuizAnswer(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)  # Timestamp when the answer was saved
 
     def __str__(self):
-        return f"Answer for {self.question.question_text} by {self.user.username}"
+        return f"Answer for {self.question.question_text} by {self.user.username} - {self.quiz.title}"
     
     
 class QuizResult(models.Model):
@@ -300,4 +301,15 @@ class QuizResult(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s result for {self.quiz.title}"
+
+class Certificate(models.Model):
+    quiz_result = models.OneToOneField(QuizResult,on_delete=models.CASCADE,related_name="certificate")  # Link to a specific quiz result
+    certificate_file = models.FileField(upload_to='certificates/',validators=[FileExtensionValidator(['pdf', 'jpg', 'jpeg', 'png'])],null=True,blank=True)
+    verified = models.BooleanField(default=False)  # Verification status
+    uploaded = models.BooleanField(default=False)  # uploaded status
+    uploaded_by = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True,related_name="uploaded_certificates")  # Teacher/Admin who uploaded
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Certificate for {self.quiz_result.user.username} - {self.quiz_result.quiz.title}"
 

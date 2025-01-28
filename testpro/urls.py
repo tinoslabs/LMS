@@ -27,6 +27,7 @@ urlpatterns = [
     path('',include("adminapp.urls")),
     path('',include("lecturerapp.urls")),
     path('',include("studentapp.urls")),
+    path('api/',include("studentapi.urls")),
     
     
     

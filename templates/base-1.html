@@ -112,50 +112,15 @@
                             </a>
                         </div>
                     </div>
-                    {% comment %} <div class="col-lg-8 col-md-8">
-                        <div class="support-button float-right d-none d-md-block">
-                            <div class="support float-left">
-                                <div class="icon">
-                                    <img src="{% static 'images/all-icon/support.png' %}" alt="icon">
-                                </div>
-                                <div class="cont">
-                                    <p>Need Help? call us free</p>
-                                    <span>321 325 5678</span>
-                                </div>
-                            </div>
-                             <div class="button float-left">
-                                <a href="" class="main-btn">Register</a>
-                            </div> 
-                        </div>
-                    </div> {% endcomment %}
+                    
                     <div class="col-lg-8 col-md-8">
                         <div class="support-button float-right d-none d-md-block">
                             <div class="support float-left">
-                                {% comment %} <div class="icon">
-                                    {% if user.is_authenticated %}
-                                        <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" alt="Profile Image" class="profile-img">
-                                    {% else %}
-                                        <img src="{% static 'images/all-icon/support.png' %}" alt="Default Icon">
-                                    {% endif %}
-                                </div> {% endcomment %}
+                                
 
-                                 {% comment %} <div class="cont">
-                                    <p>Need Help? Call us free</p>
-                                    <span>321 325 5678</span>
-                                </div>  {% endcomment %}
-
-                                {% comment %} <div class="cont">
-                                    {% if user.is_authenticated %}
-                                        <p>Welcome, {{ user.username }}</p>
-                                    {% else %}
-                                        <p>Need Help? Call us free</p>
-                                        <span>321 325 5678</span>
-                                    {% endif %}
-                                </div> {% endcomment %}
+                               
                             </div>
-                            {% comment %} <div class="button float-left">
-                                <a href="" class="main-btn">Dashboard</a>
-                            </div> {% endcomment %}
+                            
                             <div class="button float-left">
                                 {% if user.is_authenticated %}
                                     {% if user.is_superuser %}
@@ -193,13 +158,7 @@
                                     <li class="nav-item">
                                         <a href="{% url 'about_us' %}">About us</a>
                                     </li>
-                                     {% comment %} <li class="nav-item">
-                                        <a href="courses.html">Course Categories</a>
-                                        <ul class="sub-menu">
-                                            <li><a href="courses.html">Courses</a></li>
-                                            <li><a href="courses-singel.html">Course Singel</a></li>
-                                        </ul>
-                                    </li> {% endcomment %}
+                                    
                                     <li class="nav-item">
                                         <a href="#">Course Categories</a>
                                         <ul class="sub-menu">
@@ -229,13 +188,7 @@
                                         </ul>
                                     </li>
                                     
-                                    {% comment %} <li class="nav-item">
-                                        <a href="shop.html">Shop</a>
-                                        <ul class="sub-menu">
-                                            <li><a href="shop.html">Shop</a></li>
-                                            <li><a href="shop-singel.html">Shop Singel</a></li>
-                                        </ul>
-                                    </li> {% endcomment %}
+                                    
                                     <li class="nav-item">
                                         <a href="{% url 'contact_us' %}">Contact</a>
                                         
@@ -252,10 +205,10 @@
                                 
                                 {% if user.is_authenticated %}
                                 
-                                <li class="nav-item dropdown border-0 px-1 px-md-3">
+                                <li class="nav-item dropdown border-0 px-1 px-md-3 ms-2">
                                     <a class="nav-link dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" href="#" aria-expanded="false">
                                        Hi {{ user.username }}
-                                    </a>
+                                    </a> 
                                     <ul class="dropdown-menu border-xl shadow-none" aria-labelledby="userDropdown">
                                         <li>
                                             <a class="dropdown-item" href="{% url 'profile_view' %}">

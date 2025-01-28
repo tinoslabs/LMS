@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
-from .models import User,Categoriestheory,What_u_learn,Requirements,Lesson,Video,VideoModel,Instructor,CourseResource,Quiz
+from .models import Certificate,User,Categoriestheory,What_u_learn,Requirements,Lesson,Video,VideoModel,Instructor,CourseResource,Quiz
 
 
 
@@ -410,3 +410,10 @@ class QuestionForm(forms.ModelForm):
         else:
             self.fields['quiz'].queryset = Quiz.objects.none()  # Empty queryset if no quiz provided
             self.fields['quiz'].empty_label = "No Quiz available"
+
+
+class CertificateUploadForm(forms.ModelForm):
+    class Meta:
+        model = Certificate
+        fields = ["certificate_file"]
+
