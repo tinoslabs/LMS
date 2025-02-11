@@ -21,8 +21,14 @@ class User(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     
+    def get_role_display(self):
+        if self.is_superuser and not self.role:
+            return "Superuser"
+        return dict(self.ROLE_CHOICES).get(self.role, "Unknown")
+
     def __str__(self):
         return self.username
+
 
 
 class Categories(models.Model):
@@ -46,7 +52,7 @@ class Categoriestheory(models.Model):
     def get_all_theory(self):
         return Theory.objects.all().order_by('id') # type: ignore
     
-class Author(models.Model):
+class Author(models.Model):   # NOT USING ANYWHERE
     author_profile = models.ImageField(upload_to="Media/author")
     designation = models.CharField(max_length=100,null=True,blank=True)
     name = models.CharField(max_length=100, null=True)

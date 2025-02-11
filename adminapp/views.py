@@ -10,7 +10,10 @@ from testapp.forms import UserRegistrationForm
 
 from testapp.models import Certificate,Categories,Course,Level,Video,Categoriestheory,Author,Language,What_u_learn,Requirements,Lesson,VideoModel,Instructor
 from testapp.forms import CategoryForm,AuthorForm,LevelForm,LanguageForm,CourseForm,CategoriestheoryForm,WhatULearnForm,RequirementsForm,LessonForm,VideoForm,VideosForm,PasswordChangeForm,InstructorForm
-# from .settings import *
+from .forms import UserForm_byAdmin
+from lecturerapp.decorators import allowed_roles
+from django.contrib import messages
+from testapp.models import User, Instructor
 
 from django.shortcuts import get_object_or_404, redirect,render
 
@@ -67,6 +70,7 @@ def get_verified_quiz_results(request):
 
     return render(request, 'admin/quiz/verified_quiz_results.html', {'verified_quiz_results':verified_quiz_results} )
 
+
 def upload_certificate(request, verified_quiz_result_id):
     if request.method == "POST" and 'certificate_file' in request.FILES:
 
@@ -83,5 +87,49 @@ def upload_certificate(request, verified_quiz_result_id):
         messages.error(request, " Failed to Upload file...")
         return redirect('verified_results') 
 
-    
+def all_courses(request):
+    courses = Course.objects.all()
+    return render(request,'admin/all_courses.html',{'courses':courses})    
+
+@login_required
+@allowed_roles(['admin'])
+def all_users_list(request):
+    users = User.objects.all()
+    return render(request,'admin/all_users_list.html',{'users':users})  
+
+
+@login_required
+@login_required
+def add_edit_user(request):
+
+    if request.method == "POST":
+        user_id = request.POST.get("user_id")
+        if user_id:
+            user = get_object_or_404(User, id=user_id)
+            form = UserForm_byAdmin(request.POST, instance=user)
+        else:
+            form = UserForm_byAdmin(request.POST)
+
+        if form.is_valid():
+            user = form.save(commit=False)
+            if not user_id:
+                user.set_password(form.cleaned_data["password1"])
+            user.save()
+
+            if user.role == "instructor":
+                instructor_form = InstructorForm(request.POST)
+                if instructor_form.is_valid():
+                    instructor, created = Instructor.objects.get_or_create(user=user)
+                    instructor.designation = instructor_form.cleaned_data["designation"]
+                    instructor.about_author = instructor_form.cleaned_data["about_author"]
+                    instructor.save()
+
+            messages.success(request, "User saved successfully!")
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({
+                'status': 'error',
+                'errors': form.errors
+            }, status=400)
+    return redirect('all_users_list')
 

@@ -665,9 +665,7 @@ def create_user(request):
     return render(request, 'admin/user_register.html', {'form': form})
 
 
-def all_courses(request):
-    courses = Course.objects.all()
-    return render(request,'admin/all_courses.html',{'courses':courses})
+
 
     
 def chat(request):

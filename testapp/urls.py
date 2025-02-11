@@ -132,7 +132,6 @@ urlpatterns = [
      
     path('user', views.user, name='user'),    
     path('create_user',views.create_user, name='create_user'),
-    path('all_courses', views.all_courses, name='all_courses'),
       
     # path('lecture_profile',views.lecture_profile,name='lecture_profile'),
         

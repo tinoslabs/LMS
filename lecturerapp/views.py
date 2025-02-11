@@ -54,7 +54,7 @@ def account(request):
 #     return render(request, 'users/lecture_profile.html', {'profile_form': profile_form})
 
 @login_required
-@allowed_roles()
+@allowed_roles(['admin_and_instructor'])
 def add_category(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST, request.FILES)  # Include request.FILES
@@ -78,7 +78,7 @@ def add_category(request):
 
 
 @login_required
-@allowed_roles()   #for restricting student
+@allowed_roles(['admin_and_instructor'])   #for restricting student
 def category_list(request):
     categories = Categories.objects.all()
     if request.user.role == 'instructor':
@@ -90,7 +90,7 @@ def category_list(request):
 
 
 @login_required
-@allowed_roles()
+@allowed_roles(['admin_and_instructor'])
 def update_category(request, category_id):
     category = get_object_or_404(Categories, id=category_id)  # Fetch the category object
     if request.method == 'POST':
