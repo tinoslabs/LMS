@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Form submission handler
-    userForm.addEventListener("submit", function(e) {
+    userForm.addEventListener("submit", function (e) {
         e.preventDefault();
         clearErrors();
 
@@ -99,19 +99,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 'X-Requested-With': 'XMLHttpRequest',
             }
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                userModal.hide();
-                window.location.reload();
-            } else {
-                displayErrors(data.errors);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while submitting the form.');
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    userModal.hide();
+                    window.location.reload();
+                } else {
+                    displayErrors(data.errors);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting the form.');
+            });
     });
 
     // Edit user handler
@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Add user button handler
-    document.querySelector("[data-bs-target='#userModal']").addEventListener("click", function() {
+    document.querySelector("[data-bs-target='#userModal']").addEventListener("click", function () {
         resetForm();
     });
 
@@ -155,23 +155,43 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Delete user handler
-    document.querySelectorAll(".delete-user").forEach(button => {
-        button.addEventListener("click", function() {
-            const userId = this.getAttribute("data-id");
-            if (confirm("Are you sure you want to delete this user?")) {
-                // Add your delete logic here
-                console.log("Delete user with ID:", userId);
+    // Handle delete user
+    document.querySelectorAll('.delete-user').forEach(button => {
+        button.addEventListener('click', function () {
+            const userId = this.getAttribute('data-id');
+            if (confirm('Are you sure you want to delete this user?')) {
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                fetch(`/delete_user/${userId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            // Remove the row from the table or reload the page
+                            window.location.reload();
+                        } else {
+                            alert('Error deleting user: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while deleting the user.');
+                    });
             }
         });
     });
 
     // Password validation for new users
     document.querySelectorAll('#password1, #password2').forEach(input => {
-        input.addEventListener('input', function() {
+        input.addEventListener('input', function () {
             const password1 = document.getElementById('password1').value;
             const password2 = document.getElementById('password2').value;
-            
+
             if (password2 && password1 !== password2) {
                 document.getElementById('password2').classList.add('is-invalid');
                 if (!document.getElementById('password-match-error')) {

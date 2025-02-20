@@ -18,10 +18,15 @@ urlpatterns = [
         
         # all courses
         path('all_courses', views.all_courses, name='all_courses'),
-        path('all_users_list', views.all_users_list, name='all_users_list'),
+        
 
-        # add or edit user
+        # add or edit/List all user
+        path('all_users_list', views.all_users_list, name='all_users_list'),
         path('add_edit_user',views.add_edit_user, name = 'add_edit_user'),
+        path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
+
+        path('user_management/', views.user_management, name='user_management'),
+
 
 ]
 

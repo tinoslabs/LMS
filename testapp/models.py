@@ -41,7 +41,7 @@ class Categories(models.Model):
     def get_all_category(self):
         return Categories.objects.all().order_by('id')
     
-    
+# NOT USING ANYWHERE    
 class Categoriestheory(models.Model):
     icon = models.CharField(max_length=200,null=True)
     name = models.CharField(max_length=200)

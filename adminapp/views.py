@@ -99,7 +99,6 @@ def all_users_list(request):
 
 
 @login_required
-@login_required
 def add_edit_user(request):
 
     if request.method == "POST":
@@ -133,3 +132,18 @@ def add_edit_user(request):
             }, status=400)
     return redirect('all_users_list')
 
+
+@login_required
+@allowed_roles(['admin'])
+def delete_user(request, user_id):
+    if request.method == 'POST':
+        user = get_object_or_404(User, id=user_id)
+        username = user.username  # Save for message
+        user.delete()
+        messages.success(request, f"User '{username}' has been deleted successfully!")
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+
+@login_required
+def user_management(request):
+        return render(request,'admin/all_user_management.html')  
